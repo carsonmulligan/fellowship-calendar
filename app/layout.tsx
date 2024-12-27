@@ -1,40 +1,48 @@
-import { Metadata } from 'next';
-import Footer from '@/components/ui/Footer';
-import Navbar from '@/components/ui/Navbar';
-import { Toaster } from '@/components/ui/Toasts/toaster';
-import { PropsWithChildren, Suspense } from 'react';
-import { getURL } from '@/utils/helpers';
-import 'styles/main.css';
+"'use client'"
 
-const title = 'Next.js Subscription Starter';
-const description = 'Brought to you by Vercel, Stripe, and Supabase.';
+import { useState } from "'react'"
+import "'./globals.css'"
+import { Inter } from "'next/font/google'"
+import { Sidebar } from "'./components/sidebar'"
+import { ThemeProvider } from "'./components/theme-provider'"
+import { Notifications } from "'./components/notifications'"
+import { Button } from "'@/components/ui/button'"
+import { Menu } from "'lucide-react'"
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getURL()),
-  title: title,
-  description: description,
-  openGraph: {
-    title: title,
-    description: description
+const inter = Inter({ subsets: ["'latin'"] })
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const [sidebarVisible, setSidebarVisible] = useState(true)
+
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible)
   }
-};
 
-export default async function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang="en">
-      <body className="bg-black">
-        <Navbar />
-        <main
-          id="skip"
-          className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]"
-        >
-          {children}
-        </main>
-        <Footer />
-        <Suspense>
-          <Toaster />
-        </Suspense>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <div className="flex h-screen overflow-hidden">
+            {sidebarVisible && <Sidebar />}
+            <main className="flex-1 overflow-y-auto bg-white dark:bg-zinc-950">
+              <div className="flex justify-between items-center p-4">
+                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                  <Menu className="h-6 w-6" />
+                </Button>
+                <Notifications />
+              </div>
+              <div className="p-8">
+                {children}
+              </div>
+            </main>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
+
