@@ -1,15 +1,15 @@
-"'use client'"
+"use client"
 
-import { useState } from "'react'"
-import "'./globals.css'"
-import { Inter } from "'next/font/google'"
-import { Sidebar } from "'./components/sidebar'"
-import { ThemeProvider } from "'./components/theme-provider'"
-import { Notifications } from "'./components/notifications'"
-import { Button } from "'@/components/ui/button'"
-import { Menu } from "'lucide-react'"
+import { useState } from "react"
+import "./globals.css"
+import { Inter } from "next/font/google"
+import { Sidebar } from "./components/sidebar"
+import { ThemeProvider } from "./components/theme-provider"
+import { Notifications } from "./components/notifications"
+import { Button } from "@/components/ui/button"
+import { Menu } from "lucide-react"
 
-const inter = Inter({ subsets: ["'latin'"] })
+const inter = Inter({ subsets: ["latin"] })
 
 export default function RootLayout({
   children,
@@ -28,7 +28,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <div className="flex h-screen overflow-hidden">
             {sidebarVisible && <Sidebar />}
-            <main className="flex-1 overflow-y-auto bg-white dark:bg-zinc-950">
+            <main className="flex-1 overflow-y-auto bg-background">
               <div className="flex justify-between items-center p-4">
                 <Button variant="ghost" size="icon" onClick={toggleSidebar}>
                   <Menu className="h-6 w-6" />

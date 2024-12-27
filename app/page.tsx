@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { fellowships } from "./data/fellowships"
 
 function getDaysUntilDue(dueDate: string) {
-  const [day, month, year] = dueDate.split("'/'").map(Number);
+  const [day, month, year] = dueDate.split("/").map(Number);
   const due = new Date(year, month - 1, day);
   const now = new Date();
   const diffTime = due.getTime() - now.getTime();
@@ -34,7 +34,7 @@ export default function Home() {
                   </CardHeader>
                   <CardContent>
                     <p>{fellowship.description}</p>
-                    <a href={fellowship.url} target="_blank" rel="noopener noreferrer" className="text-zinc-900 hover:underline dark:text-zinc-50">
+                    <a href={fellowship.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Learn More
                     </a>
                   </CardContent>

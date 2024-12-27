@@ -191,8 +191,7 @@ export const fellowships = [
   },
   {
     name: '🌏 🗣 🌐 American Institute of India Studies Language Programs',
-    description: 'The AIIS Language Program offers nine-month academic year, summer and semester courses at elementary to advanced levels in many languages, including several that are rarely taught outside of India. The eligibility requirements vary depending on the particular program.  Applications for AIIS language programs are available in mid-September and are due by December 31; the selection process is finished by late February.
-    Courses regularly include: Bangla (Bengali), Gujarati, Hindi, Kannada, Malayalam, Marathi, Mughal Persian, Pali/Prakrit, Punjabi, Sanskrit, Tamil, Telugu, Urdu. In addition, instruction may be arranged in other languages such as: Kashmiri, Oriya, Sindhi, Tibetan',
+    description: 'The AIIS Language Program offers nine-month academic year, summer and semester courses at elementary to advanced levels in many languages, including several that are rarely taught outside of India. The eligibility requirements vary depending on the particular program. Applications for AIIS language programs are available in mid-September and are due by December 31; the selection process is finished by late February. Courses regularly include: Bangla (Bengali), Gujarati, Hindi, Kannada, Malayalam, Marathi, Mughal Persian, Pali/Prakrit, Punjabi, Sanskrit, Tamil, Telugu, Urdu. In addition, instruction may be arranged in other languages such as: Kashmiri, Oriya, Sindhi, Tibetan.',
     url: 'indiastudies.org/language-programs/',
     due_date: '01/31/2025',
     value: 1
