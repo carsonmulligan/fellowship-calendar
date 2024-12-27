@@ -5,6 +5,7 @@ import { signInWithOAuth } from '@/utils/auth-helpers/client';
 import { type Provider } from '@supabase/supabase-js';
 import { Github } from 'lucide-react';
 import { useState } from 'react';
+import Image from 'next/image';
 
 type OAuthProviders = {
   name: Provider;
@@ -18,13 +19,17 @@ export default function OauthSignIn() {
       name: 'github',
       displayName: 'GitHub',
       icon: <Github className="h-5 w-5" />
+    },
+    {
+      name: 'google',
+      displayName: 'Google',
+      icon: <Image src="/images/google.svg" alt="Google" width={20} height={20} />
     }
-    /* Add desired OAuth providers here */
   ];
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true); // Disable the button while the request is being handled
+    setIsSubmitting(true);
     await signInWithOAuth(e);
     setIsSubmitting(false);
   };
@@ -45,7 +50,7 @@ export default function OauthSignIn() {
             loading={isSubmitting}
           >
             <span className="mr-2">{provider.icon}</span>
-            <span>{provider.displayName}</span>
+            <span>Continue with {provider.displayName}</span>
           </Button>
         </form>
       ))}
