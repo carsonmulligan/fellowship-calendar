@@ -1,0 +1,77 @@
+<!-- agent_feature_auth_flow.xml -->
+<agentAuthFlow>
+  <description>
+    This agent manages user authentication and authorization using Supabase Auth.
+    It handles user registration, login, profile management, and protected routes
+    while ensuring secure access to user-specific data.
+  </description>
+  <responsibilities>
+    <item>Managing user authentication with Supabase Auth.</item>
+    <item>Implementing protected routes and middleware.</item>
+    <item>Handling user profile management.</item>
+    <item>Creating role-based access control.</item>
+    <item>Managing authentication state and sessions.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Authentication system with Supabase Auth.</item>
+    <item>User profile management interface.</item>
+    <item>Protected route middleware.</item>
+    <item>Role-based access control system.</item>
+    <item>Session management utilities.</item>
+  </deliverables>
+  <dataModel>
+    <table name="profiles">
+      <column>id: uuid (references auth.users)</column>
+      <column>full_name: string</column>
+      <column>email: string</column>
+      <column>avatar_url: string</column>
+      <column>university: string</column>
+      <column>major: string</column>
+      <column>graduation_year: integer</column>
+      <column>created_at: timestamp</column>
+      <column>updated_at: timestamp</column>
+    </table>
+    <table name="roles">
+      <column>id: uuid (primary key)</column>
+      <column>name: string</column>
+      <column>permissions: jsonb</column>
+    </table>
+    <table name="user_roles">
+      <column>id: uuid (primary key)</column>
+      <column>user_id: uuid (references auth.users)</column>
+      <column>role_id: uuid (references roles)</column>
+      <column>created_at: timestamp</column>
+    </table>
+  </dataModel>
+  <authFlows>
+    <flow name="registration">
+      <step>User signs up with email/password or OAuth</step>
+      <step>Create profile record</step>
+      <step>Assign default role</step>
+      <step>Send welcome email</step>
+    </flow>
+    <flow name="login">
+      <step>User authenticates</step>
+      <step>Load user profile and roles</step>
+      <step>Set session data</step>
+      <step>Redirect to dashboard</step>
+    </flow>
+    <flow name="passwordReset">
+      <step>User requests reset</step>
+      <step>Send reset email</step>
+      <step>Verify reset token</step>
+      <step>Update password</step>
+    </flow>
+  </authFlows>
+  <securityPolicies>
+    <policy name="profiles">
+      <rule>Users can only read/write their own profile</rule>
+    </policy>
+    <policy name="roles">
+      <rule>Only admins can manage roles</rule>
+    </policy>
+    <policy name="user_roles">
+      <rule>Only admins can assign roles</rule>
+    </policy>
+  </securityPolicies>
+</agentAuthFlow> 

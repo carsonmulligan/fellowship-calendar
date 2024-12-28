@@ -1,0 +1,47 @@
+<!-- agent_user_journey.xml -->
+<agentUserJourney>
+  <phases>
+    <phase>
+      <name>Discovery & Registration</name>
+      <details>
+        The student lands on the site, sees a quick overview of upcoming fellowships, registers or signs in
+        via Supabase auth. They customize their profile (email, name, possibly major or interest fields).
+      </details>
+    </phase>
+
+    <phase>
+      <name>Exploration & Bookmarking</name>
+      <details>
+        The student explores the “Fellowships” page, sorting by deadlines or region. They bookmark interesting
+        scholarships to build their shortlist.
+      </details>
+    </phase>
+
+    <phase>
+      <name>Calendar & Preparation</name>
+      <details>
+        The student views the calendar to see upcoming due dates. They open each fellowship’s detail page,
+        read requirements, and create draft notes or tasks. The note editor allows them to plan and brainstorm
+        essay content.
+      </details>
+    </phase>
+
+    <phase>
+      <name>Collaboration & Feedback</name>
+      <details>
+        The student shares notes with an advisor or professor, who comments or suggests edits. Potentially
+        a version-history or “pull request” style feedback is utilized. The advisor uploads a recommendation
+        letter if needed.
+      </details>
+    </phase>
+
+    <phase>
+      <name>Submission & Reflection</name>
+      <details>
+        As deadlines near, the student is reminded via email or in-app notifications. They finalize and
+        submit applications. After submission, they mark the fellowship as “completed” and can reflect
+        on the next steps or view next cycle dates.
+      </details>
+    </phase>
+  </phases>
+</agentUserJourney>

@@ -1,0 +1,56 @@
+<!-- agent_feature_notes_flow.xml -->
+<agentNotesFlow>
+  <description>
+    This agent manages the note-taking system for fellowship applications, enabling users to
+    create, edit, and organize notes for each fellowship. It implements rich text editing,
+    auto-save functionality, and collaboration features using Supabase.
+  </description>
+  <responsibilities>
+    <item>Managing note creation and storage in Supabase.</item>
+    <item>Implementing rich text editing capabilities.</item>
+    <item>Handling auto-save functionality.</item>
+    <item>Creating note organization and categorization system.</item>
+    <item>Implementing note sharing and collaboration features.</item>
+    <item>Managing version history for notes.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Rich text editor component with auto-save.</item>
+    <item>Note organization system with categories and tags.</item>
+    <item>Version history tracking for notes.</item>
+    <item>Collaboration system for shared notes.</item>
+    <item>Note search and filtering functionality.</item>
+  </deliverables>
+  <dataModel>
+    <table name="notes">
+      <column>id: uuid (primary key)</column>
+      <column>user_id: uuid (references auth.users)</column>
+      <column>fellowship_id: string</column>
+      <column>title: string</column>
+      <column>content: jsonb</column>
+      <column>category: string</column>
+      <column>created_at: timestamp</column>
+      <column>updated_at: timestamp</column>
+      <column>is_shared: boolean</column>
+    </table>
+    <table name="note_versions">
+      <column>id: uuid (primary key)</column>
+      <column>note_id: uuid (references notes)</column>
+      <column>content: jsonb</column>
+      <column>created_at: timestamp</column>
+      <column>created_by: uuid (references auth.users)</column>
+    </table>
+    <table name="note_shares">
+      <column>id: uuid (primary key)</column>
+      <column>note_id: uuid (references notes)</column>
+      <column>shared_with: uuid (references auth.users)</column>
+      <column>permission_level: string (read, comment, edit)</column>
+      <column>created_at: timestamp</column>
+    </table>
+  </dataModel>
+  <migrations>
+    <step>Create notes, note_versions, and note_shares tables</step>
+    <step>Add RLS policies for note access control</step>
+    <step>Set up real-time subscriptions for collaborative editing</step>
+    <step>Create indexes for note searching and filtering</step>
+  </migrations>
+</agentNotesFlow> 

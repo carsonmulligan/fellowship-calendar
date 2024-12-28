@@ -1,0 +1,21 @@
+<!-- agent_backend.xml -->
+<agentBackend>
+  <description>
+    This agent focuses on the backend integration with Supabase and Next.js server-side logic.
+    It handles data retrieval, authentication flows, route handlers, and any server-side
+    transformations needed before rendering or saving user data.
+  </description>
+  <responsibilities>
+    <item>Managing API routes in the Next.js App Router (e.g., /app/api/… or route handlers).</item>
+    <item>Integrating with Supabase for user authentication, notes, bookmarks, and fellowship data queries.</item>
+    <item>Server-side rendering of data via React Server Components where possible to reduce client overhead.</item>
+    <item>Implementing error handling, logging, and revalidation strategies (ISR, caching, etc.).</item>
+    <item>Scheduling tasks or cron-like jobs for emailing reminders or refreshing data.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Supabase client/server setup (createClient, route handlers, SSR queries).</item>
+    <item>API endpoints for notes, bookmarks, fellowship data, collaboration features.</item>
+    <item>Error boundaries, efficient data-fetch strategies, and caching policies.</item>
+    <item>Integration with any external email or push notification service for deadline reminders.</item>
+  </deliverables>
+</agentBackend>

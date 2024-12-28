@@ -1,0 +1,103 @@
+<codeReviewRecommendations>
+  <opinionatedDecisions>
+
+    <!-- 1. Consolidate shared components in a single location -->
+    <decision>
+      <summary>
+        Move all shared UI components (e.g., FellowshipCard, FolderStructure) to either:
+        - /components for fully reusable elements, or
+        - /app/components if they are only used within the app router context.
+      </summary>
+      <rationale>
+        This avoids duplication and confusion between /app/components and /components. 
+        Choose one approach: 
+        - Keep specialized, route-dependent items in /app/components,
+        - Keep truly global UI in /components/ui.
+      </rationale>
+    </decision>
+
+    <!-- 2. Create a dynamic route for fellowship details -->
+    <decision>
+      <summary>
+        Implement /app/fellowships/[slug]/page.tsx to show details for each fellowship.
+      </summary>
+      <rationale>
+        Storing an additional field "slug" (e.g., "rhodes-scholarship") in the fellowship object 
+        ensures the URL remains ASCII-friendly and consistent. Access that route by:
+          Link href={`/fellowships/${fellowship.slug}`}
+        This allows a dedicated details view with advanced info, notes, etc.
+      </rationale>
+    </decision>
+
+    <!-- 3. Persist Bookmarks and Notes in Supabase -->
+    <decision>
+      <summary>
+        Replace local useState for "bookmarkedFellowships" and note content with Supabase data tables.
+      </summary>
+      <rationale>
+        By storing them in a table, e.g. "bookmarks (user_id, fellowship_id)",
+        we can sync across devices, handle user authentication, and maintain collaboration features.
+        Similarly, notes can be in a "notes" table referencing (user_id, fellowship_id, content).
+      </rationale>
+    </decision>
+
+    <!-- 4. Expand Note Editor to a Markdown or Rich Text Editor -->
+    <decision>
+      <summary>
+        Swap out the Textarea for a more feature-rich editor that supports formatting or Markdown.
+      </summary>
+      <rationale>
+        "Obsidian-like" typically involves markdown editing with preview. 
+        For real-time collaboration, consider libraries like TipTap or a lightweight Markdown editor. 
+        Then persist changes to Supabase every few seconds or onBlur.
+      </rationale>
+    </decision>
+
+    <!-- 5. Integrate Collaboration and Versioning -->
+    <decision>
+      <summary>
+        Provide version history for each note or essay with a simple GitHub-like commit approach.
+      </summary>
+      <rationale>
+        For advisors or mentors, store each accepted revision as a new row in "note_versions".
+        Let students revert to a previous version if needed. 
+        Optionally, display a basic diff or "history" timeline.
+      </rationale>
+    </decision>
+
+    <!-- 6. Separate Calendar for Deadlines vs. Activity -->
+    <decision>
+      <summary>
+        Maintain the heatmap for user actions, and a separate or toggleable view for fellowship deadlines.
+      </summary>
+      <rationale>
+        Merging both in one heatmap can be confusing. 
+        Provide a toggle, e.g. "User Progress" vs "Fellowship Deadlines," 
+        or keep them in distinct components: "ActivityCalendar" vs "DeadlineCalendar."
+      </rationale>
+    </decision>
+
+    <!-- 7. Add Notifications & Email Reminders -->
+    <decision>
+      <summary>
+        Send email reminders X days before each fellowship’s due date using a Next.js Cron job or external scheduler.
+      </summary>
+      <rationale>
+        Students appreciate proactive reminders. Let them opt in or set how many days in advance they get a reminder.
+      </rationale>
+    </decision>
+
+    <!-- 8. Enhancements to UI/UX -->
+    <decision>
+      <summary>
+        A. Improve mobile responsiveness 
+        B. Add consistent color-contrast checks 
+        C. Provide ARIA labels on icons, popovers, and dialog triggers
+      </summary>
+      <rationale>
+        Ensures a broader audience can comfortably use the site, aligning with accessibility best practices.
+      </rationale>
+    </decision>
+
+  </opinionatedDecisions>
+</codeReviewRecommendations>

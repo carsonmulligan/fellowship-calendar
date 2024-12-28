@@ -1,0 +1,50 @@
+<!-- agent_feature_document_management_flow.xml -->
+<agentDocumentManagement>
+  <description>
+    This agent focuses on the document management system within the fellowship application process.
+    It handles file uploads, version control, sharing, and organization of application materials
+    using Supabase Storage and database tables.
+  </description>
+  <responsibilities>
+    <item>Managing document uploads and storage in Supabase Storage buckets.</item>
+    <item>Implementing version control for documents (e.g., essay drafts, recommendation letters).</item>
+    <item>Creating preview functionality for various document types.</item>
+    <item>Handling document sharing and collaboration features.</item>
+    <item>Organizing documents by fellowship and type.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Document storage system with proper bucket structure and security policies.</item>
+    <item>Version control system for tracking document changes.</item>
+    <item>Document preview components for different file types.</item>
+    <item>Sharing system with proper access controls.</item>
+    <item>Document organization UI with folders and tags.</item>
+  </deliverables>
+  <dataModel>
+    <table name="documents">
+      <column>id: uuid (primary key)</column>
+      <column>user_id: uuid (references auth.users)</column>
+      <column>fellowship_id: string</column>
+      <column>filename: string</column>
+      <column>file_path: string</column>
+      <column>file_type: string</column>
+      <column>version: integer</column>
+      <column>created_at: timestamp</column>
+      <column>updated_at: timestamp</column>
+    </table>
+    <table name="document_versions">
+      <column>id: uuid (primary key)</column>
+      <column>document_id: uuid (references documents)</column>
+      <column>version_number: integer</column>
+      <column>file_path: string</column>
+      <column>created_at: timestamp</column>
+      <column>created_by: uuid (references auth.users)</column>
+    </table>
+    <table name="document_shares">
+      <column>id: uuid (primary key)</column>
+      <column>document_id: uuid (references documents)</column>
+      <column>shared_with: uuid (references auth.users)</column>
+      <column>permission_level: string (read, comment, edit)</column>
+      <column>created_at: timestamp</column>
+    </table>
+  </dataModel>
+</agentDocumentManagement> 
