@@ -1,0 +1,67 @@
+<!-- agent_feature_monetization.xml -->
+<agentMonetization>
+  <description>
+    This agent handles the monetization system for the fellowship platform, managing
+    one-time payments through Stripe integration. It ensures users have access to
+    all features after paying the platform fee of $139.99.
+  </description>
+  <responsibilities>
+    <item>Managing Stripe payment integration.</item>
+    <item>Handling user payment status tracking.</item>
+    <item>Implementing payment-based feature access control.</item>
+    <item>Processing refunds and payment disputes.</item>
+    <item>Maintaining payment analytics and reporting.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Stripe payment integration with checkout flow.</item>
+    <item>Payment status tracking in Supabase.</item>
+    <item>Payment-gated feature middleware.</item>
+    <item>Admin payment dashboard.</item>
+    <item>Payment analytics system.</item>
+  </deliverables>
+  <dataModel>
+    <table name="payments">
+      <column>id: uuid (primary key)</column>
+      <column>user_id: uuid (references auth.users)</column>
+      <column>stripe_customer_id: string</column>
+      <column>stripe_payment_id: string</column>
+      <column>amount: decimal</column>
+      <column>status: string (completed, refunded, disputed)</column>
+      <column>created_at: timestamp</column>
+      <column>updated_at: timestamp</column>
+    </table>
+    <table name="payment_features">
+      <column>id: uuid (primary key)</column>
+      <column>name: string</column>
+      <column>description: string</column>
+      <column>is_paid_only: boolean</column>
+    </table>
+  </dataModel>
+  <stripeIntegration>
+    <product>
+      <name>Fellowship Platform Access</name>
+      <price>139.99</price>
+      <currency>USD</currency>
+      <type>one_time</type>
+    </product>
+    <webhooks>
+      <hook>payment_intent.succeeded</hook>
+      <hook>payment_intent.failed</hook>
+      <hook>charge.refunded</hook>
+      <hook>charge.disputed</hook>
+    </webhooks>
+  </stripeIntegration>
+  <userFlow>
+    <step>User signs up with Google Auth</step>
+    <step>Redirected to payment page</step>
+    <step>Completes Stripe checkout</step>
+    <step>Payment recorded in Supabase</step>
+    <step>Full platform access granted</step>
+  </userFlow>
+  <analytics>
+    <metric>Total revenue</metric>
+    <metric>Conversion rate</metric>
+    <metric>Refund rate</metric>
+    <metric>Average time to payment</metric>
+  </analytics>
+</agentMonetization> 
