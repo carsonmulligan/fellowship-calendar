@@ -1,23 +1,65 @@
+"use client"
+
 import Link from "next/link"
-import { Folder, Calendar, Settings } from "lucide-react"
+import { Bookmark, Calendar, ScrollText, Settings } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { usePathname } from "next/navigation"
 
 export function Sidebar() {
+  const pathname = usePathname()
+
+  const routes = [
+    {
+      label: "Fellowships",
+      icon: ScrollText,
+      href: "/fellowships",
+      color: "text-sky-500",
+    },
+    {
+      label: "Bookmarked",
+      icon: Bookmark,
+      href: "/bookmarked",
+      color: "text-violet-500",
+    },
+    {
+      label: "Calendar",
+      icon: Calendar,
+      color: "text-pink-700",
+      href: "/calendar",
+    },
+    {
+      label: "Settings",
+      icon: Settings,
+      href: "/settings",
+    },
+  ]
+
   return (
-    <div className="w-64 bg-secondary text-secondary-foreground p-4 transition-all duration-300 ease-in-out">
-      <nav className="space-y-2">
-        <Link href="/" className="flex items-center space-x-2 p-2 rounded hover:bg-primary/10">
-          <Calendar className="h-5 w-5" />
-          <span>Calendar</span>
+    <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
+      <div className="px-3 py-2 flex-1">
+        <Link href="/" className="flex items-center pl-3 mb-14">
+          <h1 className="text-2xl font-bold">
+            Fellowship Calendar
+          </h1>
         </Link>
-        <Link href="/folders" className="flex items-center space-x-2 p-2 rounded hover:bg-primary/10">
-          <Folder className="h-5 w-5" />
-          <span>Folders</span>
-        </Link>
-        <Link href="/settings" className="flex items-center space-x-2 p-2 rounded hover:bg-primary/10">
-          <Settings className="h-5 w-5" />
-          <span>Settings</span>
-        </Link>
-      </nav>
+        <div className="space-y-1">
+          {routes.map((route) => (
+            <Link
+              key={route.href}
+              href={route.href}
+              className={cn(
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition",
+                pathname === route.href ? "text-white bg-white/10" : "text-zinc-400",
+              )}
+            >
+              <div className="flex items-center flex-1">
+                <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
+                {route.label}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   )
 } 
