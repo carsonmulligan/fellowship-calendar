@@ -65,7 +65,7 @@ export default function FellowshipsPage() {
               isBookmarked: false,
               tags: []
             }}
-            onBookmark={(id) => {
+            onBookmark={(id: string) => {
               // Handle bookmark
               console.log("Bookmark", id)
             }}
