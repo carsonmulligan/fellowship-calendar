@@ -1,0 +1,21 @@
+<!-- agent_db.xml -->
+<agentDB>
+  <description>
+    This agent focuses on database schema design, migrations, and data modeling within Supabase.
+    It defines how fellowship data, user bookmarks, notes, version history, and user profiles
+    are stored and maintained.
+  </description>
+  <responsibilities>
+    <item>Creating/maintaining the necessary tables, relationships, and policies in Supabase (e.g., “fellowships”, “notes”, “users”, “bookmarks”).</item>
+    <item>Ensuring row-level security (RLS) so users can only update their own data.</item>
+    <item>Designing version control for note edits (e.g., “note_versions” table) if needed.</item>
+    <item>Managing schema migrations using SQL or Supabase CLI, and seeding with initial fellowship data.</item>
+    <item>Optimizing queries, indexes, and foreign-key relationships for performance and clarity.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Well-documented schema and migrations (schema.sql, migrations/*.sql).</item>
+    <item>Tables for “fellowships”, “users”, “notes”, “bookmarks”, “versions”, etc.</item>
+    <item>Seed scripts to populate the fellowship data set in Supabase.</item>
+    <item>Documentation on how to manage migrations and keep schema in sync with the codebase.</item>
+  </deliverables>
+</agentDB>

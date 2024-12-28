@@ -1,0 +1,22 @@
+<!-- agent_frontend.xml -->
+<agentFrontend>
+  <description>
+    This agent focuses on the front-end UI/UX aspects of the fellowship calendar application.
+    It will handle rendering pages, styling, user interaction, and communicating with the backend
+    through client-side fetches or Next.js server components. This agent is responsible for:
+  </description>
+  <responsibilities>
+    <item>Maintaining reusable UI components and ensuring consistent styling (e.g., Obsidian dark mode aesthetic).</item>
+    <item>Implementing responsive layouts and accessibility best practices.</item>
+    <item>Coordinating route structure and navigation using Next.js App Router (including dynamic fellowship pages).</item>
+    <item>Managing client-side state for user actions (e.g., note editing, bookmark toggles), unless delegated to server components.</item>
+    <item>Providing user feedback through notifications, toasts, or loading/error states.</item>
+    <item>Collaborating with the backend agent to fetch or update data in Supabase.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Next.js pages (e.g., /fellowships, /calendar, [slug]/page.tsx) with a polished UI.</item>
+    <item>Shared React components (e.g., FellowshipCard, NoteEditor, CalendarComponent).</item>
+    <item>A Shadcn UI + Tailwind-based dark mode design that is Obsidian-inspired.</item>
+    <item>Accessibility enhancements (proper ARIA labels, high-contrast text, keyboard-friendly controls).</item>
+  </deliverables>
+</agentFrontend>

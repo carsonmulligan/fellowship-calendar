@@ -1,0 +1,85 @@
+<!-- agent_feature_notification_flow.xml -->
+<agentNotificationFlow>
+  <description>
+    This agent manages the notification system for the fellowship application platform.
+    It handles real-time notifications, email alerts, and user notification preferences
+    using Supabase's real-time capabilities and Edge Functions.
+  </description>
+  <responsibilities>
+    <item>Managing real-time notifications using Supabase.</item>
+    <item>Implementing email notification system.</item>
+    <item>Handling notification preferences and settings.</item>
+    <item>Creating notification triggers for various events.</item>
+    <item>Building notification UI components.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Real-time notification system using Supabase.</item>
+    <item>Email notification service using Edge Functions.</item>
+    <item>Notification preferences management UI.</item>
+    <item>Notification center component.</item>
+    <item>Notification history and archiving system.</item>
+  </deliverables>
+  <dataModel>
+    <table name="notifications">
+      <column>id: uuid (primary key)</column>
+      <column>user_id: uuid (references auth.users)</column>
+      <column>type: string (deadline, document_update, collaboration, system)</column>
+      <column>title: string</column>
+      <column>content: text</column>
+      <column>link: string</column>
+      <column>is_read: boolean</column>
+      <column>created_at: timestamp</column>
+      <column>read_at: timestamp</column>
+    </table>
+    <table name="notification_preferences">
+      <column>id: uuid (primary key)</column>
+      <column>user_id: uuid (references auth.users)</column>
+      <column>email_enabled: boolean</column>
+      <column>push_enabled: boolean</column>
+      <column>deadline_reminders: boolean</column>
+      <column>document_updates: boolean</column>
+      <column>collaboration_requests: boolean</column>
+      <column>system_announcements: boolean</column>
+    </table>
+  </dataModel>
+  <notificationTypes>
+    <type name="deadline">
+      <triggers>
+        <trigger>Upcoming fellowship deadline</trigger>
+        <trigger>Custom deadline reminder</trigger>
+      </triggers>
+    </type>
+    <type name="document_update">
+      <triggers>
+        <trigger>Document shared</trigger>
+        <trigger>Document commented</trigger>
+        <trigger>Document version updated</trigger>
+      </triggers>
+    </type>
+    <type name="collaboration">
+      <triggers>
+        <trigger>Share request received</trigger>
+        <trigger>Comment received</trigger>
+        <trigger>Mention in note</trigger>
+      </triggers>
+    </type>
+    <type name="system">
+      <triggers>
+        <trigger>System maintenance</trigger>
+        <trigger>New features</trigger>
+        <trigger>Important updates</trigger>
+      </triggers>
+    </type>
+  </notificationTypes>
+  <edgeFunctions>
+    <function name="sendEmail">
+      <trigger>New notification requiring email</trigger>
+      <provider>Supabase Edge Functions</provider>
+      <emailService>SendGrid/AWS SES</emailService>
+    </function>
+    <function name="processNotifications">
+      <trigger>Notification queue processing</trigger>
+      <schedule>Every 5 minutes</schedule>
+    </function>
+  </edgeFunctions>
+</agentNotificationFlow> 

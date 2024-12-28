@@ -1,0 +1,46 @@
+<!-- agent_feature_bookmark_flow.xml -->
+<agentBookmarkFlow>
+  <description>
+    This agent handles the fellowship bookmarking system, allowing users to save and organize
+    fellowships they're interested in. It manages the transition from client-side state to
+    a persistent Supabase-backed storage system.
+  </description>
+  <responsibilities>
+    <item>Managing fellowship bookmarks in Supabase database.</item>
+    <item>Implementing real-time bookmark updates across devices.</item>
+    <item>Handling bookmark synchronization with user authentication.</item>
+    <item>Creating bookmark organization features (tags, categories).</item>
+    <item>Implementing bookmark filtering and sorting.</item>
+  </responsibilities>
+  <deliverables>
+    <item>Supabase-backed bookmark storage system.</item>
+    <item>Real-time bookmark synchronization.</item>
+    <item>Bookmark management UI components.</item>
+    <item>Bookmark filtering and organization system.</item>
+    <item>Integration with fellowship detail views.</item>
+  </deliverables>
+  <dataModel>
+    <table name="bookmarks">
+      <column>id: uuid (primary key)</column>
+      <column>user_id: uuid (references auth.users)</column>
+      <column>fellowship_id: string</column>
+      <column>created_at: timestamp</column>
+      <column>notes: text</column>
+      <column>priority: string (high, medium, low)</column>
+      <column>status: string (interested, preparing, applying)</column>
+    </table>
+    <table name="bookmark_tags">
+      <column>id: uuid (primary key)</column>
+      <column>bookmark_id: uuid (references bookmarks)</column>
+      <column>tag_name: string</column>
+      <column>color: string</column>
+      <column>created_at: timestamp</column>
+    </table>
+  </dataModel>
+  <migrations>
+    <step>Create bookmarks and bookmark_tags tables</step>
+    <step>Add RLS policies for user-specific bookmark access</step>
+    <step>Migrate existing client-side bookmarks to database</step>
+    <step>Enable real-time subscriptions for bookmark updates</step>
+  </migrations>
+</agentBookmarkFlow> 

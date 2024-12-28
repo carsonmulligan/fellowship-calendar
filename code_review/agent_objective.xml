@@ -1,0 +1,20 @@
+<!-- agent_objective.xml -->
+<agentObjective>
+  <missionStatement>
+    To build a streamlined, Obsidian-like fellowship calendar and application management tool
+    that empowers students to plan, track, and collaborate effectively on scholarship/fellowship
+    applications.
+  </missionStatement>
+  <primaryGoals>
+    <item>Provide a dark-mode, calendar-centric UI with easily accessible fellowship deadlines.</item>
+    <item>Offer a centralized note editor and folder structure to organize essays, tasks, and references.</item>
+    <item>Enable real-time collaboration with professors or mentors (sharing notes, versioning feedback).</item>
+    <item>Integrate reminders and progress checks (to ensure timely submissions for multiple fellowships).</item>
+    <item>Maintain user-centric data in Supabase to preserve bookmarks, notes, and user profiles.</item>
+  </primaryGoals>
+  <performanceMetrics>
+    <item>Increased usage by students for fellowship applications (tracking how many users create and finalize notes).</item>
+    <item>Reduced missed deadlines through automated reminders.</item>
+    <item>Positive user feedback on collaboration tools (essay edits, recommendation letter requests).</item>
+  </performanceMetrics>
+</agentObjective>
