@@ -51,25 +51,40 @@ export function ActivityCalendar({
     const formattedDate = format(date, "MM/dd/yyyy")
     
     if (activities.length === 0) {
-      return formattedDate
-    }
-
-    const deadlines = activities.filter(a => a.type === "deadline")
-    if (deadlines.length > 0) {
-      const scholarshipNames = deadlines
-        .map(d => d.name)
-        .filter(Boolean)
-        .join("\n• ")
       return (
         <div className="text-sm">
           <div className="font-semibold">{formattedDate}</div>
-          <div className="mt-1">Due:</div>
-          <div className="ml-2">• {scholarshipNames}</div>
+          <div className="text-muted-foreground">No deadlines</div>
         </div>
       )
     }
 
-    return formattedDate
+    const deadlines = activities.filter(a => a.type === "deadline")
+    if (deadlines.length > 0) {
+      return (
+        <div className="text-sm space-y-1.5">
+          <div className="font-semibold border-b pb-1.5">{formattedDate}</div>
+          <div className="font-medium">Due:</div>
+          <div className="space-y-1">
+            {deadlines
+              .map(d => d.name)
+              .filter(Boolean)
+              .map((name, index) => (
+                <div key={index} className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>{name}</span>
+                </div>
+              ))}
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="text-sm">
+        <div className="font-semibold">{formattedDate}</div>
+      </div>
+    )
   }
 
   // Get color based on activity level and theme
