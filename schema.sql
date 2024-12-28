@@ -143,3 +143,32 @@ create policy "Can only view own subs data." on subscriptions for select using (
  */
 drop publication if exists supabase_realtime;
 create publication supabase_realtime for table products, prices;
+
+/**
+* BOOKMARKS
+* Note: This table stores user's fellowship bookmarks
+*/
+create table bookmarks (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users not null,
+  fellowship_name text not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  -- Composite unique constraint to prevent duplicate bookmarks
+  unique(user_id, fellowship_name)
+);
+
+-- Enable RLS
+alter table bookmarks enable row level security;
+
+-- Policies
+create policy "Users can view own bookmarks" 
+  on bookmarks for select 
+  using (auth.uid() = user_id);
+
+create policy "Users can create own bookmarks" 
+  on bookmarks for insert 
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own bookmarks" 
+  on bookmarks for delete 
+  using (auth.uid() = user_id);

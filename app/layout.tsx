@@ -8,6 +8,8 @@ import { ThemeProvider } from "./components/theme-provider"
 import { Notifications } from "./components/notifications"
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
+import { Toaster } from "@/components/ui/toaster"
+import { SignInButton } from "@/components/auth/sign-in-button"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -33,13 +35,17 @@ export default function RootLayout({
                 <Button variant="ghost" size="icon" onClick={toggleSidebar}>
                   <Menu className="h-6 w-6" />
                 </Button>
-                <Notifications />
+                <div className="flex items-center gap-4">
+                  <SignInButton />
+                  <Notifications />
+                </div>
               </div>
               <div className="p-8">
                 {children}
               </div>
             </main>
           </div>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

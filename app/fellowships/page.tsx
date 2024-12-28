@@ -13,6 +13,7 @@ import {
 import { Card } from "@/components/ui/card"
 import { fellowships } from "@/app/data/fellowships"
 import { format, parse, isValid } from "date-fns"
+import { useBookmarks } from "@/app/hooks/use-bookmarks"
 
 // Helper function to convert DD/MM/YYYY to Date object
 function parseDate(dateStr: string) {
@@ -39,6 +40,7 @@ function parseDate(dateStr: string) {
 
 export default function FellowshipsPage() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const { bookmarks, toggleBookmark, isBookmarked, loading } = useBookmarks()
   const currentYear = new Date().getFullYear()
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i)
 
@@ -93,13 +95,10 @@ export default function FellowshipsPage() {
                 description: fellowship.description,
                 deadline: fellowship.due_date,
                 url: fellowship.url,
-                isBookmarked: false,
+                isBookmarked: isBookmarked(fellowship.name),
                 tags: []
               }}
-              onBookmark={(id: string) => {
-                // Handle bookmark
-                console.log("Bookmark", id)
-              }}
+              onBookmark={() => toggleBookmark(fellowship.name)}
             />
           ))}
       </div>

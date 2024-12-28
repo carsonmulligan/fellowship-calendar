@@ -1,36 +1,43 @@
-import { createClient } from '@/utils/supabase/server';
-import { NextResponse } from 'next/server';
-import { NextRequest } from 'next/server';
-import { getErrorRedirect, getStatusRedirect } from '@/utils/helpers';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the `@supabase/ssr` package. It exchanges an auth code for the user's session.
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get('code');
+export async function GET(request: Request) {
+  try {
+    const requestUrl = new URL(request.url)
+    const code = requestUrl.searchParams.get('code')
+    const origin = requestUrl.origin
+    
+    console.log('Auth Callback:', {
+      url: request.url,
+      origin,
+      code: code?.substring(0, 6) + '...',
+      headers: Object.fromEntries(request.headers),
+    })
 
-  if (code) {
-    const supabase = createClient();
+    if (code) {
+      const cookieStore = cookies()
+      const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+      
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+      
+      if (error) {
+        console.error('Auth Error:', error)
+        return NextResponse.redirect(`${origin}/error?message=${error.message}`)
+      }
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+      console.log('Auth Success:', {
+        user: data.user?.email,
+        session: data.session?.access_token?.substring(0, 6) + '...'
+      })
 
-    if (error) {
-      return NextResponse.redirect(
-        getErrorRedirect(
-          `${requestUrl.origin}/signin`,
-          error.name,
-          "Sorry, we weren't able to log you in. Please try again."
-        )
-      );
+      // Redirect to the main dashboard after successful sign in
+      return NextResponse.redirect(`${origin}/`)
     }
-  }
 
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(
-    getStatusRedirect(
-      `${requestUrl.origin}/account`,
-      'Success!',
-      'You are now signed in.'
-    )
-  );
+    return NextResponse.redirect(`${origin}/error?message=No auth code provided`)
+  } catch (error) {
+    console.error('Callback Error:', error)
+    return NextResponse.redirect(`${origin}/error?message=Internal server error`)
+  }
 }
