@@ -18,11 +18,12 @@ export default function FellowshipsPage() {
   const currentYear = new Date().getFullYear()
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i)
 
-  // Mock activities for the calendar
+  // Activities for the calendar with scholarship names
   const activities = fellowships.map(f => ({
     date: new Date(f.due_date.split("/").reverse().join("-")),
     count: 1,
-    type: "deadline" as const
+    type: "deadline" as const,
+    name: f.name
   }))
 
   return (
