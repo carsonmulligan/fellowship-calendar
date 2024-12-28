@@ -2,7 +2,8 @@
 
 import { useTheme } from "next-themes"
 import { Card } from "./ui/card"
-import { addYears, eachDayOfInterval, format, isSameDay, subYears } from "date-fns"
+import { addYears, eachDayOfInterval, format, isSameDay, isValid } from "date-fns"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 
 interface Activity {
   date: Date
@@ -31,56 +32,63 @@ export function ActivityCalendar({
 
   // Get activities for a date
   const getActivitiesForDate = (date: Date) => {
-    return activities.filter(activity => 
-      isSameDay(new Date(activity.date), date)
-    )
+    return activities.filter(activity => {
+      if (!isValid(activity.date)) return false
+      return isSameDay(activity.date, date)
+    })
   }
 
   // Get activity level for a date (0-4)
   const getActivityLevel = (activities: Activity[]) => {
-    if (activities.length === 0) return 0
-    
-    const hasDeadline = activities.some(a => a.type === "deadline")
-    if (hasDeadline) return 4 // Highest level for deadlines
-    
-    const actionCount = activities.filter(a => a.type === "action").length
-    if (actionCount > 5) return 3
-    if (actionCount > 3) return 2
-    return 1
+    const deadlines = activities.filter(a => a.type === "deadline")
+    if (deadlines.length === 0) return 0
+    if (deadlines.length >= 4) return 4
+    return deadlines.length
   }
 
   // Get tooltip text for a date
   const getTooltipText = (date: Date, activities: Activity[]) => {
+    const formattedDate = format(date, "MM/dd/yyyy")
+    
     if (activities.length === 0) {
-      return format(date, "MMM d, yyyy")
+      return formattedDate
     }
 
     const deadlines = activities.filter(a => a.type === "deadline")
     if (deadlines.length > 0) {
-      const scholarshipNames = deadlines.map(d => d.name).filter(Boolean).join(", ")
-      return `${format(date, "MMM d, yyyy")}\nDue: ${scholarshipNames}`
+      const scholarshipNames = deadlines
+        .map(d => d.name)
+        .filter(Boolean)
+        .join("\n• ")
+      return (
+        <div className="text-sm">
+          <div className="font-semibold">{formattedDate}</div>
+          <div className="mt-1">Due:</div>
+          <div className="ml-2">• {scholarshipNames}</div>
+        </div>
+      )
     }
 
-    return `${format(date, "MMM d, yyyy")}\n${activities.length} activities`
+    return formattedDate
   }
 
   // Get color based on activity level and theme
   const getColor = (level: number) => {
     if (theme === "dark") {
       switch (level) {
-        case 1: return "bg-emerald-900"
-        case 2: return "bg-emerald-700"
-        case 3: return "bg-emerald-500"
+        case 1: return "bg-emerald-800"
+        case 2: return "bg-emerald-600"
+        case 3: return "bg-emerald-400"
         case 4: return "bg-emerald-300"
         default: return "bg-zinc-800"
       }
     }
     
     switch (level) {
-      case 1: return "bg-emerald-200"
-      case 2: return "bg-emerald-300"
-      case 3: return "bg-emerald-400"
-      case 4: return "bg-emerald-500"
+      case 1: return "bg-emerald-300"
+      case 2: return "bg-emerald-400"
+      case 3: return "bg-emerald-500"
+      case 4: return "bg-emerald-600"
       default: return "bg-zinc-100"
     }
   }
@@ -90,17 +98,24 @@ export function ActivityCalendar({
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Activity Calendar</h3>
         <div className="flex flex-wrap gap-1">
-          {dates.map((date) => {
-            const dayActivities = getActivitiesForDate(date)
-            const level = getActivityLevel(dayActivities)
-            return (
-              <div
-                key={date.toISOString()}
-                className={`w-3 h-3 rounded-sm ${getColor(level)} hover:ring-2 hover:ring-offset-2 hover:ring-zinc-400 transition-all cursor-help`}
-                title={getTooltipText(date, dayActivities)}
-              />
-            )
-          })}
+          <TooltipProvider>
+            {dates.map((date) => {
+              const dayActivities = getActivitiesForDate(date)
+              const level = getActivityLevel(dayActivities)
+              return (
+                <Tooltip key={date.toISOString()} delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <div
+                      className={`w-3 h-3 rounded-sm ${getColor(level)} hover:ring-2 hover:ring-offset-2 hover:ring-zinc-400 transition-all`}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {getTooltipText(date, dayActivities)}
+                  </TooltipContent>
+                </Tooltip>
+              )
+            })}
+          </TooltipProvider>
         </div>
         <div className="flex items-center justify-end gap-2 mt-4 text-sm text-zinc-500">
           <span>Less</span>

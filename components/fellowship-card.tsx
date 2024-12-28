@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 import Link from "next/link"
+import { format, parse, isValid } from "date-fns"
 
 interface Tag {
   id: string
@@ -18,7 +19,7 @@ interface FellowshipCardProps {
     id: string
     name: string
     description: string
-    deadline: string
+    deadline: string // DD/MM/YYYY format
     url: string
     isBookmarked?: boolean
     tags?: Tag[]
@@ -26,6 +27,28 @@ interface FellowshipCardProps {
   onBookmark?: (id: string) => void
   onAddTag?: (id: string, tag: Tag) => void
   onRemoveTag?: (id: string, tagId: string) => void
+}
+
+// Helper function to convert DD/MM/YYYY to MM/DD/YYYY
+function formatDate(dateStr: string) {
+  try {
+    // First try parsing as DD/MM/YYYY
+    const date = parse(dateStr, "dd/MM/yyyy", new Date())
+    if (isValid(date)) {
+      return format(date, "MM/dd/yyyy")
+    }
+    
+    // If that fails, try parsing as MM/DD/YYYY
+    const altDate = parse(dateStr, "MM/dd/yyyy", new Date())
+    if (isValid(altDate)) {
+      return dateStr // Already in correct format
+    }
+    
+    return "Invalid date"
+  } catch (error) {
+    console.error("Error parsing date:", dateStr, error)
+    return "Invalid date"
+  }
 }
 
 export function FellowshipCard({
@@ -51,7 +74,7 @@ export function FellowshipCard({
               </Link>
             </CardTitle>
             <CardDescription>
-              Due {fellowship.deadline}
+              Due: {formatDate(fellowship.deadline)}
             </CardDescription>
           </div>
           <Button
