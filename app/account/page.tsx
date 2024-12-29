@@ -1,25 +1,32 @@
 import CustomerPortalForm from '@/components/ui/AccountForms/CustomerPortalForm';
 import EmailForm from '@/components/ui/AccountForms/EmailForm';
 import NameForm from '@/components/ui/AccountForms/NameForm';
+import ProfileForm from '@/components/ui/AccountForms/ProfileForm';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import {
   getUserDetails,
   getSubscription,
-  getUser
+  getUser,
+  getProfile
 } from '@/utils/supabase/queries';
 
 export default async function Account() {
   const supabase = createClient();
-  const [user, userDetails, subscription] = await Promise.all([
-    getUser(supabase),
-    getUserDetails(supabase),
-    getSubscription(supabase)
-  ]);
-
+  
+  // First get the user
+  const user = await getUser(supabase);
+  
   if (!user) {
     return redirect('/signin');
   }
+
+  // Then get the rest of the data
+  const [userDetails, subscription, profile] = await Promise.all([
+    getUserDetails(supabase),
+    getSubscription(supabase),
+    getProfile(user.id)
+  ]);
 
   return (
     <section className="mb-32 bg-black">
@@ -29,11 +36,12 @@ export default async function Account() {
             Account
           </h1>
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            We partnered with Stripe for a simplified billing.
+            Manage your account settings
           </p>
         </div>
       </div>
       <div className="p-4">
+        {profile && <ProfileForm profile={profile} />}
         <CustomerPortalForm subscription={subscription} />
         <NameForm userName={userDetails?.full_name ?? ''} />
         <EmailForm userEmail={user.email} />
