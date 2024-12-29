@@ -22,7 +22,7 @@ IMPLEMENTATION STATUS
    │  Google →   │
    └─────────────┘
 
-2. Calendar View
+2. Calendar Views
    ┌─────────── Calendar ────────────┐
    │    September 2025               │
    │ Mo Tu We Th Fr Sa Su           │
