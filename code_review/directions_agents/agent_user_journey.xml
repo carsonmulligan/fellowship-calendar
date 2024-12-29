@@ -1,4 +1,6 @@
 <!-- agent_user_journey.xml -->
+
+
 <agentUserJourney>
   <phases>
     <phase>
@@ -6,6 +8,8 @@
       <details>
         The student lands on the site, sees a quick overview of upcoming fellowships, registers or signs in
         via Supabase auth. They customize their profile (email, name, possibly major or interest fields).
+        
+
       </details>
     </phase>
 
@@ -45,3 +49,197 @@
     </phase>
   </phases>
 </agentUserJourney>
+
+
+<!-- agent_wireframes_implementation.xml -->
+<agentWireframesImplementation>
+  <description>
+    This document provides wireframe specifications and implementation instructions
+    for the Fellowship Calendar application. It follows the user journey and provides
+    specific guidance for implementing each view.
+  </description>
+
+  <wireframes>
+    <view>
+      <name>Landing Page</name>
+      <layout>
+        ┌─────────────── Landing Page ───────────────┐
+        │                                           │
+        │  ┌─── Upcoming Fellowships ────┐          │
+        │  │ [1] Rhodes - Oct 1         │   Sign In │
+        │  │ [2] Marshall - Sep 15      │    with   │
+        │  │ [3] Fulbright - Oct 10     │  Google → │
+        │  └──────────────────────────┘            │
+        │                                           │
+        └───────────────────────────────────────────┘
+      </layout>
+      <implementation>
+        <component>app/page.tsx</component>
+        <features>
+          <item>Server-side rendered fellowship list (closest deadlines)</item>
+          <item>Google OAuth button using Supabase Auth</item>
+          <item>Dark mode with subtle gradient background</item>
+        </features>
+        <dataRequirements>
+          <query>SELECT * FROM fellowships ORDER BY deadline LIMIT 3</query>
+        </dataRequirements>
+      </implementation>
+    </view>
+
+    <view>
+      <name>Fellowship List</name>
+      <layout>
+        ┌─────────────── Fellowships ───────────────┐
+        │ 🔍 Search...         Filter ▼   Sort ▼    │
+        │                                          │
+        │ ┌─────────── Fellowship Card ───────────┐ │
+        │ │ 🏆 Rhodes Scholarship                 │ │
+        │ │ Due: Oct 1, 2025       [Bookmark ⭐] │ │
+        │ │ Description...                       │ │
+        │ └─────────────────────────────────────┘ │
+        │                                          │
+        └──────────────────────────────────────────┘
+      </layout>
+      <implementation>
+        <component>app/fellowships/page.tsx</component>
+        <features>
+          <item>Client-side search with debouncing</item>
+          <item>Server-side sorting and filtering</item>
+          <item>Optimistic bookmark updates</item>
+        </features>
+        <components>
+          <item>components/fellowship-card.tsx</item>
+          <item>components/search-bar.tsx</item>
+          <item>components/filter-dropdown.tsx</item>
+        </components>
+      </implementation>
+    </view>
+
+    <view>
+      <name>Calendar View</name>
+      <layout>
+        ┌─────────────── Calendar View ──────────────┐
+        │    September 2025                          │
+        │ Mo Tu We Th Fr Sa Su                      │
+        │        1  2  3  4  5                      │
+        │  6  7  8  9 [10][11] 12   [X] Deadlines  │
+        │ 13 14 15 16 17 18  19   [X] Notes        │
+        │ 20 21 22 23 24 25  26                     │
+        └───────────────────────────────────────────┘
+      </layout>
+      <implementation>
+        <component>app/calendar/page.tsx</component>
+        <features>
+          <item>Month view with deadline indicators</item>
+          <item>Toggle between deadlines and notes</item>
+          <item>Click to add/edit events</item>
+        </features>
+        <libraries>
+          <item>@/components/ui/calendar</item>
+          <item>date-fns for date manipulation</item>
+        </libraries>
+      </implementation>
+    </view>
+
+    <view>
+      <name>Notes Editor</name>
+      <layout>
+        ┌─────────────── Fellowship Notes ────────────┐
+        │ Rhodes Scholarship                          │
+        │ ┌─────────── Note Editor ─────────────┐    │
+        │ │ # Essay Draft                       │    │
+        │ │ - Research interests                │    │
+        │ │ - Leadership examples               │    │
+        │ └─────────────────────────────────────┘    │
+        │ [Share with Advisor] [Save Draft]          │
+        └───────────────────────────────────────────┘
+      </layout>
+      <implementation>
+        <component>app/fellowships/[id]/notes/page.tsx</component>
+        <features>
+          <item>Rich text editor with Markdown support</item>
+          <item>Auto-save functionality</item>
+          <item>Share via email link</item>
+        </features>
+        <dataModel>
+          <table>notes</table>
+          <fields>
+            <field>id: uuid</field>
+            <field>fellowship_id: string</field>
+            <field>content: text</field>
+            <field>last_edited: timestamp</field>
+          </fields>
+        </dataModel>
+      </implementation>
+    </view>
+
+    <view>
+      <name>Application Tracking</name>
+      <layout>
+        ┌─────────────── My Applications ────────────┐
+        │                                           │
+        │ Rhodes Scholarship                        │
+        │ [✓] Essay Draft                          │
+        │ [✓] Recommendation Letters               │
+        │ [✓] Transcript                           │
+        │ [ ] Submit Application                    │
+        │                                           │
+        │ Deadline: 2 days remaining! ⚠️            │
+        └───────────────────────────────────────────┘
+      </layout>
+      <implementation>
+        <component>app/applications/page.tsx</component>
+        <features>
+          <item>Checklist with progress tracking</item>
+          <item>Deadline countdown</item>
+          <item>Document upload status</item>
+        </features>
+        <dataModel>
+          <table>application_progress</table>
+          <fields>
+            <field>fellowship_id: string</field>
+            <field>user_id: uuid</field>
+            <field>checklist: jsonb</field>
+            <field>status: string</field>
+          </fields>
+        </dataModel>
+      </implementation>
+    </view>
+  </wireframes>
+
+  <globalComponents>
+    <component>
+      <name>Navigation Header</name>
+      <layout>
+        ┌─────────────── Header ───────────────────┐
+        │ Fellowship Calendar                      │
+        │ [Fellowships] [Calendar] [Notes] [Profile]│
+        └───────────────────────────────────────────┘
+      </layout>
+      <implementation>
+        <file>components/layout/header.tsx</file>
+        <features>
+          <item>Responsive navigation</item>
+          <item>Active state indicators</item>
+          <item>User profile dropdown</item>
+        </features>
+      </implementation>
+    </component>
+  </globalComponents>
+
+  <implementationGuidelines>
+    <guideline>Use Next.js 14 App Router and React Server Components by default</guideline>
+    <guideline>Implement dark mode using next-themes</guideline>
+    <guideline>Use Tailwind CSS for styling with consistent spacing</guideline>
+    <guideline>Implement proper loading and error states for all data fetching</guideline>
+    <guideline>Use TypeScript for all components and maintain strict type checking</guideline>
+    <guideline>Follow atomic design principles for component organization</guideline>
+  </implementationGuidelines>
+
+  <dataFlow>
+    <principle>Server-side rendering for initial page loads</principle>
+    <principle>Client-side updates for interactive features</principle>
+    <principle>Optimistic updates for better UX</principle>
+    <principle>Proper error handling and recovery</principle>
+  </dataFlow>
+</agentWireframesImplementation> 

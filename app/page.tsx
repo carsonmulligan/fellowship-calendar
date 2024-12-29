@@ -1,60 +1,53 @@
-import { CalendarComponent } from "./components/calendar"
-import { FolderStructure } from "./components/folder-structure"
-import { NoteEditor } from "./components/note-editor"
-import { PreparationCycle } from "./components/preparation-cycle"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { fellowships } from "./data/fellowships"
+'use client'
 
-function getDaysUntilDue(dueDate: string) {
-  const [day, month, year] = dueDate.split("/").map(Number);
-  const due = new Date(year, month - 1, day);
-  const now = new Date();
-  const diffTime = due.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
-}
+import { FellowshipCard } from '@/components/fellowship-card'
+
+const upcomingFellowships = [
+  {
+    id: 'rhodes-scholarship',
+    name: '🇬🇧 Rhodes Scholarship',
+    description: 'The Rhodes Scholarships are the oldest and most celebrated international fellowship awards in the world.',
+    deadline: '01/10/2025',
+    url: 'http://www.rhodesscholar.org/',
+  },
+  {
+    id: 'marshall-scholarship',
+    name: '🇬🇧 Marshall Scholarship',
+    description: 'The Marshall Scholarship funds one or two years of graduate study at a wide range of institutions in the United Kingdom.',
+    deadline: '15/09/2025',
+    url: 'http://www.marshallscholarship.org/',
+  },
+  {
+    id: 'gates-cambridge',
+    name: '🇬🇧 Gates Cambridge Scholarship',
+    description: 'The Gates Cambridge Scholarship supports one to three years of post-baccalaureate study in any field at the University of Cambridge.',
+    deadline: '10/10/2025',
+    url: 'https://www.gatescambridge.org/',
+  },
+]
 
 export default function Home() {
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-bold">Fellowships Calendar</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <CalendarComponent />
-          <div className="mt-8">
-            <h2 className="text-2xl font-semibold mb-4">Upcoming Deadlines</h2>
-            <div className="space-y-4">
-              {fellowships.map((fellowship) => (
-                <Card key={fellowship.name}>
-                  <CardHeader>
-                    <CardTitle>{fellowship.name}</CardTitle>
-                    <CardDescription>
-                      Due in {getDaysUntilDue(fellowship.due_date)} days
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{fellowship.description}</p>
-                    <a href={fellowship.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                      Learn More
-                    </a>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div>
-          <FolderStructure />
-          <div className="mt-8">
-            <h2 className="text-2xl font-semibold mb-4">Note Editor</h2>
-            <NoteEditor />
-          </div>
-          <div className="mt-8">
-            <PreparationCycle />
-          </div>
-        </div>
+    <main className="container mx-auto p-8">
+      <div className="mb-8 space-y-2">
+        <h1 className="text-4xl font-bold">Fellowship Calendar</h1>
+        <p className="text-muted-foreground">
+          Track and manage your fellowship applications
+        </p>
       </div>
-    </div>
+
+      <section>
+        <h2 className="mb-4 text-2xl font-semibold">Upcoming Deadlines</h2>
+        <div className="grid gap-6">
+          {upcomingFellowships.map((fellowship) => (
+            <FellowshipCard
+              key={fellowship.id}
+              fellowship={fellowship}
+            />
+          ))}
+        </div>
+      </section>
+    </main>
   )
 }
 

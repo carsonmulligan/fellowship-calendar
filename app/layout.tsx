@@ -1,12 +1,15 @@
-import "./globals.css"
-import { Inter } from "next/font/google"
-import { Sidebar } from "./components/sidebar"
-import { ThemeProvider } from "./components/theme-provider"
-import { Notifications } from "./components/notifications"
-import Navbar from "@/components/ui/Navbar"
-import ClientLayout from "@/components/ClientLayout"
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import SupabaseProvider from '@/components/providers/supabase-provider'
+import { Toaster } from '@/components/ui/toaster'
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'Fellowship Calendar',
+  description: 'Track and manage your fellowship applications',
+}
 
 export default function RootLayout({
   children,
@@ -14,16 +17,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <div className="flex flex-col h-screen overflow-hidden">
-            <Navbar />
-            <ClientLayout>
-              {children}
-            </ClientLayout>
-          </div>
-        </ThemeProvider>
+        <SupabaseProvider>
+          {children}
+          <Toaster />
+        </SupabaseProvider>
       </body>
     </html>
   )
