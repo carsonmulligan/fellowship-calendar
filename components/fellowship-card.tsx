@@ -1,18 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import { Bookmark, BookmarkCheck, Tag } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
-import { Button } from "./ui/button"
-import { Badge } from "./ui/badge"
+import { useState, useEffect } from "react"
+import { Bookmark, BookmarkCheck } from "lucide-react"
 import Link from "next/link"
 import { format, parse, isValid } from "date-fns"
-
-interface Tag {
-  id: string
-  name: string
-  color: string
-}
+import { cn } from "@/lib/utils"
+import { createClient } from "@/lib/supabase/client"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface FellowshipCardProps {
   fellowship: {
@@ -21,12 +16,7 @@ interface FellowshipCardProps {
     description: string
     deadline: string // DD/MM/YYYY format
     url: string
-    isBookmarked?: boolean
-    tags?: Tag[]
   }
-  onBookmark?: (id: string) => void
-  onAddTag?: (id: string, tag: Tag) => void
-  onRemoveTag?: (id: string, tagId: string) => void
 }
 
 // Helper function to convert DD/MM/YYYY to MM/DD/YYYY
@@ -51,39 +41,110 @@ function formatDate(dateStr: string) {
   }
 }
 
-export function FellowshipCard({
-  fellowship,
-  onBookmark,
-  onAddTag,
-  onRemoveTag,
-}: FellowshipCardProps) {
+export function FellowshipCard({ fellowship }: FellowshipCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [isBookmarked, setIsBookmarked] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function checkBookmarkStatus() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (session) {
+          const { data: bookmarks } = await supabase
+            .from('bookmarks')
+            .select('id')
+            .eq('fellowship_id', fellowship.id)
+            .eq('user_id', session.user.id)
+            .single()
+          
+          setIsBookmarked(!!bookmarks)
+        }
+      } catch (error) {
+        console.error('Error checking bookmark status:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkBookmarkStatus()
+  }, [fellowship.id, supabase])
+
+  const handleBookmark = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        // TODO: Show login prompt
+        return
+      }
+
+      if (isBookmarked) {
+        // Remove bookmark
+        await supabase
+          .from('bookmarks')
+          .delete()
+          .eq('fellowship_id', fellowship.id)
+          .eq('user_id', session.user.id)
+        
+        setIsBookmarked(false)
+      } else {
+        // Add bookmark
+        await supabase
+          .from('bookmarks')
+          .insert({
+            fellowship_id: fellowship.id,
+            user_id: session.user.id,
+            status: 'interested'
+          })
+        
+        setIsBookmarked(true)
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error)
+    }
+  }
 
   return (
     <Card
-      className="relative hover:shadow-lg transition-shadow"
+      className={cn(
+        "relative transition-shadow hover:shadow-lg",
+        isHovered && "ring-2 ring-primary/10"
+      )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      data-testid="fellowship-card"
     >
       <CardHeader className="pb-3">
-        <div className="flex justify-between items-start">
+        <div className="flex items-start justify-between">
           <div className="space-y-1">
             <CardTitle className="text-xl">
-              <Link href={`/fellowships/${fellowship.id}`} className="hover:underline">
+              <Link 
+                href={`/fellowships/${fellowship.id}`} 
+                className="hover:underline"
+                data-testid="fellowship-title"
+              >
                 {fellowship.name}
               </Link>
             </CardTitle>
-            <CardDescription>
+            <CardDescription data-testid="fellowship-deadline">
               Due: {formatDate(fellowship.deadline)}
             </CardDescription>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            className={fellowship.isBookmarked ? "text-yellow-500" : "text-gray-400"}
-            onClick={() => onBookmark?.(fellowship.id)}
+            className={cn(
+              "transition-colors",
+              isBookmarked ? "text-yellow-500" : "text-gray-400"
+            )}
+            onClick={handleBookmark}
+            disabled={isLoading}
+            data-testid="bookmark-button"
           >
-            {fellowship.isBookmarked ? (
+            {isBookmarked ? (
               <BookmarkCheck className="h-5 w-5" />
             ) : (
               <Bookmark className="h-5 w-5" />
@@ -92,34 +153,22 @@ export function FellowshipCard({
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+        <p 
+          className="mb-4 line-clamp-2 text-sm text-muted-foreground"
+          data-testid="fellowship-description"
+        >
           {fellowship.description}
         </p>
-        <div className="flex flex-wrap gap-2">
-          {fellowship.tags?.map((tag) => (
-            <Badge
-              key={tag.id}
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-              style={{ backgroundColor: tag.color + "20", color: tag.color }}
-            >
-              <Tag className="w-3 h-3 mr-1" />
-              {tag.name}
-            </Badge>
-          ))}
-          {isHovered && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-6"
-              onClick={() => {
-                // Open tag selection dialog
-              }}
-            >
-              <Tag className="w-3 h-3 mr-1" />
-              Add Tag
-            </Button>
-          )}
+        <div className="flex items-center space-x-2">
+          <Link
+            href={fellowship.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-primary hover:underline"
+            data-testid="fellowship-link"
+          >
+            Learn More →
+          </Link>
         </div>
       </CardContent>
     </Card>
