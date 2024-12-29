@@ -5,9 +5,10 @@ import { Bookmark, BookmarkCheck } from "lucide-react"
 import Link from "next/link"
 import { format, parse, isValid } from "date-fns"
 import { cn } from "@/lib/utils"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useSupabase } from "@/components/providers/supabase-provider"
+import { useToast } from "@/components/ui/use-toast"
 
 interface FellowshipCardProps {
   fellowship: {
@@ -45,19 +46,18 @@ export function FellowshipCard({ fellowship }: FellowshipCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const supabase = createClient()
+  const { supabase, user } = useSupabase()
+  const { toast } = useToast()
 
   useEffect(() => {
     async function checkBookmarkStatus() {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
-        
-        if (session) {
+        if (user) {
           const { data: bookmarks } = await supabase
             .from('bookmarks')
             .select('id')
             .eq('fellowship_id', fellowship.id)
-            .eq('user_id', session.user.id)
+            .eq('user_id', user.id)
             .single()
           
           setIsBookmarked(!!bookmarks)
@@ -70,14 +70,16 @@ export function FellowshipCard({ fellowship }: FellowshipCardProps) {
     }
 
     checkBookmarkStatus()
-  }, [fellowship.id, supabase])
+  }, [fellowship.id, supabase, user])
 
   const handleBookmark = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
-        // TODO: Show login prompt
+      if (!user) {
+        toast({
+          title: 'Authentication required',
+          description: 'Please sign in to bookmark fellowships',
+          variant: 'destructive',
+        })
         return
       }
 
@@ -87,23 +89,36 @@ export function FellowshipCard({ fellowship }: FellowshipCardProps) {
           .from('bookmarks')
           .delete()
           .eq('fellowship_id', fellowship.id)
-          .eq('user_id', session.user.id)
+          .eq('user_id', user.id)
         
         setIsBookmarked(false)
+        toast({
+          title: 'Bookmark removed',
+          description: 'Fellowship has been removed from your bookmarks',
+        })
       } else {
         // Add bookmark
         await supabase
           .from('bookmarks')
           .insert({
             fellowship_id: fellowship.id,
-            user_id: session.user.id,
+            user_id: user.id,
             status: 'interested'
           })
         
         setIsBookmarked(true)
+        toast({
+          title: 'Fellowship bookmarked',
+          description: 'Fellowship has been added to your bookmarks',
+        })
       }
     } catch (error) {
       console.error('Error toggling bookmark:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to update bookmark. Please try again.',
+        variant: 'destructive',
+      })
     }
   }
 
