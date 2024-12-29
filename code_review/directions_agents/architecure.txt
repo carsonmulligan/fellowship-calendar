@@ -1,0 +1,89 @@
+Fellowship Calendar Architecture
+==============================
+
++------------------------+
+|      Client Layer      |
++------------------------+
+| - Next.js App Router   |
+| - React Components     |
+| - TailwindCSS         |
++------------------------+
+           ↑↓
++------------------------+
+|    Application Layer   |
++------------------------+
+|                        |
+|   Feature Modules      |
+| +------------------+   |
+| |Authentication    |   |
+| |  - Google OAuth  |   |
+| |  - User Profiles |   |
+| +------------------+   |
+|                        |
+| +------------------+   |
+| |Fellowship Mgmt   |   |
+| | - Bookmarks      |   |
+| | - Calendar       |   |
+| | - Documents      |   |
+| | - Notes          |   |
+| +------------------+   |
+|                        |
+| +------------------+   |
+| |Notifications     |   |
+| | - Real-time      |   |
+| | - Email          |   |
+| | - Reminders      |   |
+| +------------------+   |
+|                        |
+| +------------------+   |
+| |Monetization      |   |
+| | - Stripe         |   |
+| | - Access Control |   |
+| +------------------+   |
+|                        |
++------------------------+
+           ↑↓
++------------------------+
+|    Services Layer      |
++------------------------+
+| - Supabase Auth       |
+| - Supabase Database   |
+| - Supabase Storage    |
+| - Supabase Edge Funcs |
+| - Stripe API          |
+| - Calendar APIs       |
++------------------------+
+           ↑↓
++------------------------+
+|     Data Layer        |
++------------------------+
+| Database Tables:      |
+| - users/profiles      |
+| - fellowships         |
+| - bookmarks          |
+| - documents          |
+| - notes              |
+| - calendar_events    |
+| - notifications      |
+| - payments           |
++------------------------+
+
+Security & Access Control
+========================
+┌────────────────────────┐
+│ Row Level Security     │
+├────────────────────────┤
+│ - User-specific access │
+│ - Role-based policies  │
+│ - Payment gates        │
+└────────────────────────┘
+
+Real-time Features
+=================
+┌────────────────────────┐
+│ Supabase Realtime      │
+├────────────────────────┤
+│ - Bookmark sync        │
+│ - Document collab      │
+│ - Notifications        │
+└────────────────────────┘
