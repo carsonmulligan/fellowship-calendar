@@ -1,3 +1,5 @@
+'use client'
+
 import { FellowshipCard } from '@/components/fellowship-card'
 
 const upcomingFellowships = [
@@ -7,7 +9,6 @@ const upcomingFellowships = [
     description: 'The Rhodes Scholarships are the oldest and most celebrated international fellowship awards in the world.',
     deadline: '01/10/2025',
     url: 'http://www.rhodesscholar.org/',
-    isBookmarked: false,
   },
   {
     id: 'marshall-scholarship',
@@ -15,7 +16,6 @@ const upcomingFellowships = [
     description: 'The Marshall Scholarship funds one or two years of graduate study at a wide range of institutions in the United Kingdom.',
     deadline: '15/09/2025',
     url: 'http://www.marshallscholarship.org/',
-    isBookmarked: false,
   },
   {
     id: 'gates-cambridge',
@@ -23,7 +23,6 @@ const upcomingFellowships = [
     description: 'The Gates Cambridge Scholarship supports one to three years of post-baccalaureate study in any field at the University of Cambridge.',
     deadline: '10/10/2025',
     url: 'https://www.gatescambridge.org/',
-    isBookmarked: false,
   },
 ]
 
@@ -44,10 +43,6 @@ export default function Home() {
             <FellowshipCard
               key={fellowship.id}
               fellowship={fellowship}
-              onBookmark={(id) => {
-                console.log('Bookmark:', id)
-                // TODO: Implement bookmark functionality
-              }}
             />
           ))}
         </div>
